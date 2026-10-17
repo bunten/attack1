@@ -1,0 +1,600 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>ホワイトハッカー訓練 Level 1</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #101820;
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+h1 {
+    color: #00ff88;
+}
+
+.attack {
+    background: #350000;
+    border: 3px solid red;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.defense {
+    background: #00352a;
+    border: 3px solid #00ff88;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.meaning {
+    background: #202c35;
+    border: 3px solid #00ffff;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 10px;
+    display: none;
+}
+
+#attackLetter {
+    font-size: 80px;
+    color: red;
+    font-weight: bold;
+}
+
+#defenseWord {
+    font-size: 45px;
+    color: #00ff88;
+    font-weight: bold;
+}
+
+#wordMeaning {
+    font-size: 28px;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+#securityMeaning {
+    font-size: 20px;
+    margin-top: 15px;
+    line-height: 1.8;
+}
+
+#typing {
+    font-size: 30px;
+    padding: 15px;
+    width: 500px;
+    max-width: 80%;
+    text-align: center;
+}
+
+#progress {
+    font-size: 25px;
+    margin: 20px;
+    color: #00ffff;
+}
+
+#message {
+    font-size: 25px;
+    margin: 20px;
+    min-height: 40px;
+}
+
+#score {
+    font-size: 22px;
+}
+
+button {
+    font-size: 20px;
+    padding: 12px 30px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<h1>🛡️ WHITE HACKER TRAINING</h1>
+
+<p>LEVEL 1</p>
+
+<p>
+攻撃されたアルファベットを防御しよう！
+</p>
+
+
+<div id="score">
+SCORE：0
+</div>
+
+
+<!-- 攻撃 -->
+
+<div class="attack">
+
+<h2>⚠️ ATTACK</h2>
+
+<p>攻撃された文字</p>
+
+<div id="attackLetter">
+V
+</div>
+
+</div>
+
+
+<!-- 防御 -->
+
+<div class="defense">
+
+<h2>🛡️ DEFENSE</h2>
+
+<p>防御コマンド</p>
+
+<div id="defenseWord">
+VERIFY
+</div>
+
+</div>
+
+
+<!-- 入力 -->
+
+<p>
+防御語をタイピングしてください
+</p>
+
+<input
+    id="typing"
+    type="text"
+    autocomplete="off"
+    autofocus
+>
+
+
+<!-- 入力状況 -->
+
+<div id="progress">
+入力：待機中
+</div>
+
+
+<!-- メッセージ -->
+
+<div id="message">
+⚠️ 攻撃を検知しました！
+</div>
+
+
+<!-- 防御語の意味 -->
+
+<div class="meaning" id="meaningBox">
+
+<h2>📘 DEFENSE WORD</h2>
+
+<div id="wordMeaning"></div>
+
+<div id="securityMeaning"></div>
+
+</div>
+
+
+<button onclick="newAttack()">
+次の攻撃
+</button>
+
+
+
+<script>
+
+
+// ======================================
+// 防御辞書
+// ======================================
+
+const defenseMap = {
+
+    A: {
+        word: "ANALYZE",
+        meaning: "分析する",
+        security: "攻撃やデータの内容を調べ、何が起きているか分析します。"
+    },
+
+    B: {
+        word: "BLOCK",
+        meaning: "遮断する・止める",
+        security: "危険な通信やアクセスを止めます。"
+    },
+
+    C: {
+        word: "CHECK",
+        meaning: "確認する",
+        security: "ファイルや通信に問題がないか確認します。"
+    },
+
+    D: {
+        word: "DEFEND",
+        meaning: "守る・防御する",
+        security: "コンピューターやネットワークを攻撃から守ります。"
+    },
+
+    E: {
+        word: "EXAMINE",
+        meaning: "詳しく調べる",
+        security: "怪しいファイルやプログラムを詳しく調べます。"
+    },
+
+    F: {
+        word: "FIREWALL",
+        meaning: "防火壁",
+        security: "ネットワークへの危険な通信をチェックし、必要に応じて止めます。"
+    },
+
+    G: {
+        word: "GUARD",
+        meaning: "守る・見張る",
+        security: "大切なデータやコンピューターを守ります。"
+    },
+
+    H: {
+        word: "HARDEN",
+        meaning: "強化する",
+        security: "パスワードや設定を強化して、攻撃されにくくします。"
+    },
+
+    I: {
+        word: "INSPECT",
+        meaning: "詳しく調べる",
+        security: "怪しい通信やファイルを調査します。"
+    },
+
+    J: {
+        word: "JUDGE",
+        meaning: "判断する",
+        security: "安全か危険かを判断します。"
+    },
+
+    K: {
+        word: "KEEP",
+        meaning: "守る・保持する",
+        security: "大切な情報を安全に保管します。"
+    },
+
+    L: {
+        word: "LOCK",
+        meaning: "鍵をかける",
+        security: "パスワードなどを使ってデータへのアクセスを制限します。"
+    },
+
+    M: {
+        word: "MONITOR",
+        meaning: "監視する",
+        security: "ネットワークやコンピューターに異常がないか見守ります。"
+    },
+
+    N: {
+        word: "NOTICE",
+        meaning: "気づく・発見する",
+        security: "怪しい動きや異常を早く発見します。"
+    },
+
+    O: {
+        word: "OBSERVE",
+        meaning: "観察する",
+        security: "コンピューターの動きを観察して異常を見つけます。"
+    },
+
+    P: {
+        word: "PROTECT",
+        meaning: "守る",
+        security: "個人情報やコンピューターを攻撃から守ります。"
+    },
+
+    Q: {
+        word: "QUARANTINE",
+        meaning: "隔離する",
+        security: "危険なファイルを他に広がらないよう隔離します。"
+    },
+
+    R: {
+        word: "REMOVE",
+        meaning: "取り除く",
+        security: "危険なプログラムやファイルを削除します。"
+    },
+
+    S: {
+        word: "SECURE",
+        meaning: "安全にする・保護する",
+        security: "システムやデータを安全な状態にします。"
+    },
+
+    T: {
+        word: "TRACE",
+        meaning: "追跡する",
+        security: "攻撃や不正なアクセスの経路を調べます。"
+    },
+
+    U: {
+        word: "UPDATE",
+        meaning: "更新する",
+        security: "ソフトウェアを最新の状態にして、弱点を減らします。"
+    },
+
+    V: {
+        word: "VERIFY",
+        meaning: "確認する・検証する",
+        security: "情報や相手が本物かどうか確認します。"
+    },
+
+    W: {
+        word: "WATCH",
+        meaning: "注意して見る・監視する",
+        security: "怪しい動きがないか注意して見ます。"
+    },
+
+    X: {
+        word: "XCHECK",
+        meaning: "クロスチェックする",
+        security: "複数の情報を比べて確認します。"
+    },
+
+    Y: {
+        word: "YIELD",
+        meaning: "譲る・結果を出す",
+        security: "この教材では、攻撃を受けたときに安全な処理へ切り替えるイメージです。"
+    },
+
+    Z: {
+        word: "ZERO",
+        meaning: "ゼロにする",
+        security: "危険な状態や不要なデータをゼロにするイメージです。"
+    }
+
+};
+
+
+
+// ======================================
+// 攻撃文字
+// ======================================
+
+const attackLetters = Object.keys(defenseMap);
+
+
+
+// ======================================
+// ゲームの変数
+// ======================================
+
+let currentAttack = "";
+let score = 0;
+let cleared = false;
+
+
+
+// ======================================
+// 新しい攻撃
+// ======================================
+
+function newAttack() {
+
+    const randomIndex =
+        Math.floor(
+            Math.random() * attackLetters.length
+        );
+
+    currentAttack =
+        attackLetters[randomIndex];
+
+
+    // 攻撃文字を表示
+
+    document.getElementById("attackLetter")
+        .textContent = currentAttack;
+
+
+    // 防御語を表示
+
+    document.getElementById("defenseWord")
+        .textContent =
+        defenseMap[currentAttack].word;
+
+
+    // 入力欄
+
+    const typing =
+        document.getElementById("typing");
+
+    typing.value = "";
+    typing.style.backgroundColor = "white";
+    typing.disabled = false;
+
+
+    // 入力状況
+
+    document.getElementById("progress")
+        .textContent =
+        "入力：待機中";
+
+
+    // メッセージ
+
+    document.getElementById("message")
+        .textContent =
+        "⚠️ 攻撃を検知しました！";
+
+
+    // 意味を隠す
+
+    document.getElementById("meaningBox")
+        .style.display = "none";
+
+
+    cleared = false;
+
+
+    typing.focus();
+
+}
+
+
+
+// ======================================
+// タイピング判定
+// ======================================
+
+document.getElementById("typing")
+.addEventListener("input", function() {
+
+    if (cleared) {
+        return;
+    }
+
+
+    const input =
+        this.value.toUpperCase();
+
+
+    const correct =
+        defenseMap[currentAttack].word;
+
+
+    // 入力した文字を表示
+
+    document.getElementById("progress")
+        .textContent =
+        "入力：" + input;
+
+
+    // 正解
+
+    if (input === correct) {
+
+        cleared = true;
+
+        score += 100;
+
+
+        document.getElementById("score")
+            .textContent =
+            "SCORE：" + score;
+
+
+        document.getElementById("message")
+            .textContent =
+            "🛡️ 防御成功！";
+
+
+        this.style.backgroundColor =
+            "#99ffcc";
+
+
+        this.disabled = true;
+
+
+        // ==============================
+        // 防御語の意味を表示
+        // ==============================
+
+        document.getElementById("wordMeaning")
+            .textContent =
+            correct +
+            " ＝ " +
+            defenseMap[currentAttack].meaning;
+
+
+        document.getElementById("securityMeaning")
+            .textContent =
+            "🔐 セキュリティでは： " +
+            defenseMap[currentAttack].security;
+
+
+        document.getElementById("meaningBox")
+            .style.display =
+            "block";
+
+    }
+
+
+    // 正しい途中まで入力
+
+    else if (
+        input.length > 0 &&
+        correct.startsWith(input)
+    ) {
+
+        document.getElementById("message")
+            .textContent =
+            "⌨️ 防御コマンドを入力中……";
+
+
+        this.style.backgroundColor =
+            "white";
+
+    }
+
+
+    // 間違い
+
+    else if (input.length > 0) {
+
+        document.getElementById("message")
+            .textContent =
+            "❌ 間違っています。もう一度入力してください。";
+
+
+        this.style.backgroundColor =
+            "#ffaaaa";
+
+    }
+
+
+    // 空欄
+
+    else {
+
+        document.getElementById("message")
+            .textContent =
+            "⚠️ 攻撃を検知しました！";
+
+
+        this.style.backgroundColor =
+            "white";
+
+    }
+
+});
+
+
+
+// ======================================
+// ゲーム開始
+// ======================================
+
+newAttack();
+
+
+</script>
+
+</body>
+
+</html>
+```
